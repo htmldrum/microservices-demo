@@ -1,0 +1,20 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+MACHINES = 1
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "512"
+  end
+
+  (1..MACHINES).each do |n|
+    config.vm.define "node#{n}" do |node|
+      node.vm.network "private_network", ip: "192.168.59.10#{n}"
+    end
+  end
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "plays/init.yml"
+  end
+end
