@@ -169,6 +169,29 @@ job "weavedemo" {
         }
       }
     }
+
+    task "login" {
+      driver = "docker"
+
+      config {
+        image = "weaveworksdemos/login"
+        hostname = "login"
+        network_mode = "secure"
+      }
+
+      service {
+        name = "${TASKGROUP}-login"
+        tags = ["login"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 128 # 128Mb
+        network {
+          mbits = 10
+        }
+      }
+    }
   }
 
   group "db" {
