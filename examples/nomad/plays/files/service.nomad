@@ -11,6 +11,40 @@ job "webservice" {
     max_parallel = 1
   }
 
+  group "backend" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
+    }
+
+    task "catalogue" {
+      driver = "docker"
+
+      config {
+        image = "weaveworksdemos/catalogue"
+        hostname = "catalogue"
+        network_mode = "external"
+      }
+
+      service {
+        name = "${TASKGROUP}-catalogue"
+        tags = ["frontend", "front-end", "catalogue"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 128 # 128Mb
+        network {
+          mbits = 10
+        }
+      }
+    }
+  }
+
   group "db" {
     count = 1
 
