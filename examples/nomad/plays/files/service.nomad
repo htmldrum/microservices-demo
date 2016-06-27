@@ -100,6 +100,29 @@ job "weavedemo" {
         }
       }
     }
+
+    task "orders" {
+      driver = "docker"
+
+      config {
+        image = "weaveworksdemos/orders"
+        hostname = "orders"
+        network_mode = "internal"
+      }
+
+      service {
+        name = "${TASKGROUP}-orders"
+        tags = ["orders"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 128 # 128Mb
+        network {
+          mbits = 10
+        }
+      }
+    }
   }
 
   group "db" {
