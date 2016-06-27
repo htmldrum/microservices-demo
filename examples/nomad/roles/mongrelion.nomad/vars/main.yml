@@ -5,3 +5,4 @@ nomad_version: 0.3.2
 nomad_bin: /usr/bin/nomad
 nomad_datadir: /var/lib/nomad
 nomad_configdir: /etc/nomad
+nomad_jobsdir: "{{ nomad_datadir }}/jobs"
