@@ -77,6 +77,29 @@ job "weavedemo" {
         }
       }
     }
+
+    task "cart" {
+      driver = "docker"
+
+      config {
+        image = "weaveworksdemos/cart"
+        hostname = "cart"
+        network_mode = "internal"
+      }
+
+      service {
+        name = "${TASKGROUP}-cart"
+        tags = ["cart"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 128 # 128Mb
+        network {
+          mbits = 10
+        }
+      }
+    }
   }
 
   group "db" {
