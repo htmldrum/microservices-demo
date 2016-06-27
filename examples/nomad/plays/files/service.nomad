@@ -1,4 +1,4 @@
-job "webservice" {
+job "weavedemo" {
   datacenters = ["dc1"]
 
   constraint {

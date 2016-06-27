@@ -4,7 +4,7 @@
   become_user: root
 
   vars:
-    jobpath: /var/lib/nomad/jobs/service.nomad
+    jobpath: /var/lib/nomad/jobs/weavedemo.nomad
     networks:
       - internal
       - external
