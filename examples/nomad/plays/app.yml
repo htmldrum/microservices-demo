@@ -22,3 +22,15 @@
         fi
       register: networkcreation
       with_items: "{{ networks }}"
+
+    - name: ensure job file is present
+      copy: src=files/service.nomad dest=/var/lib/nomad/jobs/service.nomad
+
+    - name: check status of nomad job
+      shell: nomad status | grep webservice | wc -l
+      register: jobcheck
+      changed_when: no
+
+    - name: ensure nomad job is running
+      command: nomad run /var/lib/nomad/jobs/service.nomad
+      when: jobcheck.stdout == '0'
