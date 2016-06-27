@@ -123,6 +123,29 @@ job "weavedemo" {
         }
       }
     }
+
+    task "shipping" {
+      driver = "docker"
+
+      config {
+        image = "weaveworksdemos/shipping"
+        hostname = "shipping"
+        network_mode = "backoffice"
+      }
+
+      service {
+        name = "${TASKGROUP}-shipping"
+        tags = ["shipping"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 128 # 128Mb
+        network {
+          mbits = 10
+        }
+      }
+    }
   }
 
   group "db" {
