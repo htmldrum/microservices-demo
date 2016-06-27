@@ -1,0 +1,24 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+
+  vars:
+    networks:
+      - internal
+      - external
+      - secure
+      - backoffice
+
+  tasks:
+    # TODO: Only notify change when the networks are actually created
+    - name: ensure networks are created
+      shell: >
+        if [ $(docker network ls | grep {{ item }} | wc -l) -eq 0 ]
+          then
+            docker network create -d weave {{ item }}
+          else
+            echo "noop"
+        fi
+      register: networkcreation
+      with_items: "{{ networks }}"
