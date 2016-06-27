@@ -88,5 +88,28 @@ job "webservice" {
         }
       }
     }
+
+    task "ordersdb" {
+      driver = "docker"
+
+      config {
+        image = "mongo"
+        hostname = "orders-db"
+        network_mode = "internal"
+      }
+
+      service {
+        name = "${TASKGROUP}-orders"
+        tags = ["db", "orders", "ordersdb"]
+      }
+
+      resources {
+        cpu = 500 # 500 Mhz
+        memory = 256 # 256MB
+        network {
+          mbits = 10
+        }
+      }
+    }
   }
 }
