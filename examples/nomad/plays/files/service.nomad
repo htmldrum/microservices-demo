@@ -11,6 +11,7 @@ job "weavedemo" {
     max_parallel = 1
   }
 
+  # - Frontend group #
   group "frontend" {
     count = 1
 
@@ -44,7 +45,9 @@ job "weavedemo" {
       }
     }
   }
+  # - End frontend group - #
 
+  # - Backend group - #
   group "backend" {
     count = 1
 
@@ -55,6 +58,7 @@ job "weavedemo" {
       mode = "delay"
     }
 
+    # - Catalogue app - #
     task "catalogue" {
       driver = "docker"
 
@@ -77,7 +81,9 @@ job "weavedemo" {
         }
       }
     }
+    # - End Catalogue app - #
 
+    # - Cart app - #
     task "cart" {
       driver = "docker"
 
@@ -100,7 +106,9 @@ job "weavedemo" {
         }
       }
     }
+    # - End Cart app - #
 
+    # - Orders app - #
     task "orders" {
       driver = "docker"
 
@@ -123,7 +131,9 @@ job "weavedemo" {
         }
       }
     }
+    # - End Orders app - #
 
+    # - Shipping app - #
     task "shipping" {
       driver = "docker"
 
@@ -146,7 +156,9 @@ job "weavedemo" {
         }
       }
     }
+    # - End Shipping app - #
 
+    # - Payment app - #
     task "payment" {
       driver = "docker"
 
@@ -169,7 +181,9 @@ job "weavedemo" {
         }
       }
     }
+    # - End Payment app - #
 
+    # - Login app - #
     task "login" {
       driver = "docker"
 
@@ -192,8 +206,11 @@ job "weavedemo" {
         }
       }
     }
+    # - End Login app - #
   }
+  # - End backend group - #
 
+  # - Database group - #
   group "db" {
     count = 1
 
@@ -204,6 +221,7 @@ job "weavedemo" {
       mode = "delay"
     }
 
+    # - RabbitMQ database - #
     task "rabbitmq" {
       driver = "docker"
 
@@ -225,7 +243,9 @@ job "weavedemo" {
         }
       }
     }
+    # - End RabbitMQ database - #
 
+    # - Accounts database - #
     task "accountsdb" {
       driver = "docker"
 
@@ -248,7 +268,9 @@ job "weavedemo" {
         }
       }
     }
+    # - End Accounts database - #
 
+    # - Cart database - #
     task "cartdb" {
       driver = "docker"
 
@@ -271,7 +293,9 @@ job "weavedemo" {
         }
       }
     }
+    # - End Cart database - #
 
+    # - Orders database - #
     task "ordersdb" {
       driver = "docker"
 
@@ -294,5 +318,7 @@ job "weavedemo" {
         }
       }
     }
+    # - End Orders database - #
   }
+  # - End database group - #
 }
