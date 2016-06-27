@@ -11,6 +11,40 @@ job "webservice" {
     max_parallel = 1
   }
 
+  group "frontend" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
+    }
+
+    task "front-end" {
+      driver = "docker"
+
+      config {
+        image = "weaveworksdemos/front-end"
+        hostname = "front-end"
+        network_mode = "external"
+      }
+
+      service {
+        name = "${TASKGROUP}-front-end"
+        tags = ["frontend", "front-end"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 128 # 128Mb
+        network {
+          mbits = 10
+        }
+      }
+    }
+  }
+
   group "backend" {
     count = 1
 
