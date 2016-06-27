@@ -69,7 +69,7 @@ job "webservice" {
       }
 
       resources {
-        cpu = 500 # 500 Mhz
+        cpu = 100 # 100 Mhz
         memory = 128 # 128MB
         network {
           mbits = 10
@@ -92,7 +92,7 @@ job "webservice" {
       }
 
       resources {
-        cpu = 500 # 500 Mhz
+        cpu = 100 # 100 Mhz
         memory = 256 # 256MB
         network {
           mbits = 10
@@ -115,7 +115,7 @@ job "webservice" {
       }
 
       resources {
-        cpu = 500 # 500 Mhz
+        cpu = 100 # 100 Mhz
         memory = 256 # 256MB
         network {
           mbits = 10
@@ -138,7 +138,7 @@ job "webservice" {
       }
 
       resources {
-        cpu = 500 # 500 Mhz
+        cpu = 100 # 100 Mhz
         memory = 256 # 256MB
         network {
           mbits = 10
