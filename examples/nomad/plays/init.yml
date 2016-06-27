@@ -40,3 +40,13 @@
     - name: ensure weave is running
       command: weave launch
       when: should_runweave
+
+- hosts: all
+  become: yes
+  become_user: root
+  tasks:
+    - name: ensure jq is installed
+      get_url: url=https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 dest=/usr/bin/jq
+
+    - name: ensure jq has the proper permissions set
+      file: path=/usr/bin/jq mode="a+x"
