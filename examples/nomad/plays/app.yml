@@ -4,6 +4,7 @@
   become_user: root
 
   vars:
+    jobpath: /var/lib/nomad/jobs/service.nomad
     networks:
       - internal
       - external
@@ -24,7 +25,7 @@
       with_items: "{{ networks }}"
 
     - name: ensure job file is present
-      copy: src=files/service.nomad dest=/var/lib/nomad/jobs/service.nomad
+      copy: src=files/service.nomad dest={{ jobpath }}
       register: jobfile
 
     - name: check status of nomad job
@@ -32,6 +33,9 @@
       register: jobcheck
       changed_when: no
 
+    - name: sanity check for nomad job definition
+      command: nomad validate {{ jobpath }}
+
     - name: ensure nomad job is running
-      command: nomad run /var/lib/nomad/jobs/service.nomad
+      command: nomad run {{ jobpath }}
       when: jobfile.changed or jobcheck.stdout == '0'
