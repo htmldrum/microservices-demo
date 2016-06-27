@@ -25,6 +25,7 @@
 
     - name: ensure job file is present
       copy: src=files/service.nomad dest=/var/lib/nomad/jobs/service.nomad
+      register: jobfile
 
     - name: check status of nomad job
       shell: nomad status | grep webservice | wc -l
@@ -33,4 +34,4 @@
 
     - name: ensure nomad job is running
       command: nomad run /var/lib/nomad/jobs/service.nomad
-      when: jobcheck.stdout == '0'
+      when: jobfile.changed or jobcheck.stdout == '0'

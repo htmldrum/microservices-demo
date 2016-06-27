@@ -36,6 +36,29 @@ job "webservice" {
 
       resources {
         cpu = 500 # 500 Mhz
+        memory = 128 # 128MB
+        network {
+          mbits = 10
+        }
+      }
+    }
+
+    task "accountsdb" {
+      driver = "docker"
+
+      config {
+        image = "mongo"
+        hostname = "accounts-db"
+        network_mode = "secure"
+      }
+
+      service {
+        name = "${TASKGROUP}-accountsdb"
+        tags = ["db", "accounts", "accountsdb"]
+      }
+
+      resources {
+        cpu = 500 # 500 Mhz
         memory = 256 # 256MB
         network {
           mbits = 10
