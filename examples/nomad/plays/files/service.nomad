@@ -146,6 +146,29 @@ job "weavedemo" {
         }
       }
     }
+
+    task "payment" {
+      driver = "docker"
+
+      config {
+        image = "weaveworksdemos/payment"
+        hostname = "payment"
+        network_mode = "secure"
+      }
+
+      service {
+        name = "${TASKGROUP}-payment"
+        tags = ["payment"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 128 # 128Mb
+        network {
+          mbits = 10
+        }
+      }
+    }
   }
 
   group "db" {
