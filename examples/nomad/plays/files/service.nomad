@@ -65,5 +65,28 @@ job "webservice" {
         }
       }
     }
+
+    task "cartdb" {
+      driver = "docker"
+
+      config {
+        image = "mongo"
+        hostname = "cart-db"
+        network_mode = "internal"
+      }
+
+      service {
+        name = "${TASKGROUP}-cartdb"
+        tags = ["db", "cart", "cartdb"]
+      }
+
+      resources {
+        cpu = 500 # 500 Mhz
+        memory = 256 # 256MB
+        network {
+          mbits = 10
+        }
+      }
+    }
   }
 }
