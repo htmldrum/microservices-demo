@@ -22,12 +22,13 @@ job "weavedemo" {
       mode = "delay"
     }
 
+    # - Frontend app - #
     task "front-end" {
       driver = "docker"
 
       config {
         image = "weaveworksdemos/front-end"
-        hostname = "front-end"
+        hostname = "front-end.weave.local"
         network_mode = "external"
       }
 
@@ -44,6 +45,44 @@ job "weavedemo" {
         }
       }
     }
+    # - End Frontend app - #
+
+    # - edge-router app - #
+    task "edgerouter" {
+      driver = "docker"
+
+      config {
+        image = "weaveworksdemos/edge-router"
+        hostname = "edge-router"
+        network_mode = "external"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
+        port_map = {
+          http = 80
+          https = 443
+        }
+      }
+
+      service {
+        name = "${TASKGROUP}-edgerouter"
+        tags = ["router", "edgerouter"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 128 # 128Mb
+        network {
+          mbits = 10
+          port "http" {
+            static = 80
+          }
+          port "https" {
+            static = 443
+          }
+        }
+      }
+    }
+    # - End edge-router app - #
   }
   # - End frontend group - #
 
