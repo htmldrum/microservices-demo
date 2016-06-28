@@ -11,6 +11,7 @@
   roles:
     - roles/mongrelion.docker
     - roles/mongrelion.weave
+    - roles/mongrelion.weave-scope
     - roles/mongrelion.nomad
 
 # We need to let Docker handlers to kick in before we call any Docker command
@@ -29,9 +30,15 @@
       register: weavecheck
       changed_when: no
 
+    - name: check for scope state
+      command: docker ps -q -f name=weavescope
+      register: scopecheck
+      changed_when: no
+
     - set_fact:
         should_runconsul: "{{ consulcheck.stdout_lines | length == 0 }}"
         should_runweave: "{{ weavecheck.stdout_lines | length == 0 }}"
+        should_runscope: "{{ scopecheck.stdout_lines | length == 0 }}"
 
     - name: ensure consul is running
       command: docker run -d --name consul -p "8500:8500" --restart always progrium/consul -server -bootstrap
@@ -40,6 +47,10 @@
     - name: ensure weave is running
       command: weave launch
       when: should_runweave
+
+    - name: ensure scope is running
+      command: scope launch
+      when: should_runscope
 
 - hosts: all
   become: yes
