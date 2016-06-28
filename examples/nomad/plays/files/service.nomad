@@ -58,6 +58,33 @@ job "weavedemo" {
       mode = "delay"
     }
 
+    # - Accounts app - #
+    task "accounts" {
+      driver = "docker"
+
+      config {
+        image = "weaveworksdemos/accounts"
+        hostname = "accounts"
+        network_mode = "secure"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
+      }
+
+      service {
+        name = "${TASKGROUP}-accounts"
+        tags = ["accounts"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 128 # 128Mb
+        network {
+          mbits = 10
+        }
+      }
+    }
+    # - End Accounts app - #
+
     # - Catalogue app - #
     task "catalogue" {
       driver = "docker"
