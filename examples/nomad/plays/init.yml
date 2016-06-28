@@ -6,7 +6,9 @@
   vars:
     - clusterstore: yes
     - consul_ip: 192.168.59.101
-    - nomad_startonboot: yes
+    - nomad_start_on_boot: yes
+    - nomad_client_network_interface: eth1
+    - nomad_devmode: yes
 
   roles:
     - roles/mongrelion.docker
