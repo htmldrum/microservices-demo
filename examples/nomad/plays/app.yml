@@ -4,7 +4,8 @@
   become_user: root
 
   vars:
-    jobpath: /var/lib/nomad/jobs/weavedemo.nomad
+    jobspath: /var/lib/nomad/jobs
+    netmanpath: /usr/bin/netman
     networks:
       - internal
       - external
@@ -12,6 +13,12 @@
       - backoffice
 
   tasks:
+    - name: ensure netman script is present
+      copy: src=files/netman.sh dest={{ netmanpath }}
+
+    - name: ensure netman script is executable
+      file: path={{ netmanpath }} mode="a+x"
+
     # TODO: Only notify change when the networks are actually created
     - name: ensure networks are created
       shell: >
@@ -24,18 +31,34 @@
       register: networkcreation
       with_items: "{{ networks }}"
 
-    - name: ensure job file is present
-      copy: src=files/service.nomad dest={{ jobpath }}
-      register: jobfile
+    - name: ensure weavedemo job file is present
+      copy: src=files/service.nomad dest={{ jobspath }}/weavedemo.nomad
+      register: weavejobfile
 
-    - name: check status of nomad job
+    - name: ensure netman job file is present
+      copy: src=files/netman.nomad dest={{ jobspath }}/netman.nomad
+      register: netmanjobfile
+
+    - name: check status of weavedemo job
       shell: nomad status | grep webservice | wc -l
-      register: jobcheck
+      register: weavejobcheck
       changed_when: no
 
-    - name: sanity check for nomad job definition
-      command: nomad validate {{ jobpath }}
+    - name: check status of weavedemo job
+      shell: nomad status | grep webservice | wc -l
+      register: netmanjobcheck
+      changed_when: no
 
-    - name: ensure nomad job is running
-      command: nomad run {{ jobpath }}
-      when: jobfile.changed or jobcheck.stdout == '0'
+    - name: sanity check for nomad jobs
+      command: nomad validate {{ jobspath }}/{{ item }}.nomad
+      with_items:
+        - weavedemo
+        - netman
+
+    - name: ensure weavedemo job is running
+      command: nomad run {{ jobspath }}/weavedemo.nomad
+      when: weavejobfile.changed or weavejobcheck.stdout == '0'
+
+    - name: ensure netman job is running
+      command: nomad run {{ jobspath }}/netman.nomad
+      when: netmanjobfile.changed or netmanjobcheck.stdout == '0'
