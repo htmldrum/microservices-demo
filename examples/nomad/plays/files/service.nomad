@@ -30,6 +30,8 @@ job "weavedemo" {
         image = "weaveworksdemos/front-end"
         hostname = "front-end.weave.local"
         network_mode = "external"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
       }
 
       service {
@@ -53,7 +55,7 @@ job "weavedemo" {
 
       config {
         image = "weaveworksdemos/edge-router"
-        hostname = "edge-router"
+        hostname = "edge-router.weave.local"
         network_mode = "external"
         dns_servers = ["172.17.0.1"]
         dns_search_domains = ["weave.local."]
@@ -103,7 +105,7 @@ job "weavedemo" {
 
       config {
         image = "weaveworksdemos/accounts"
-        hostname = "accounts"
+        hostname = "accounts.weave.local"
         network_mode = "secure"
         dns_servers = ["172.17.0.1"]
         dns_search_domains = ["weave.local."]
@@ -130,8 +132,10 @@ job "weavedemo" {
 
       config {
         image = "weaveworksdemos/catalogue"
-        hostname = "catalogue"
+        hostname = "catalogue.weave.local"
         network_mode = "external"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
       }
 
       service {
@@ -155,8 +159,10 @@ job "weavedemo" {
 
       config {
         image = "weaveworksdemos/cart"
-        hostname = "cart"
+        hostname = "cart.weave.local"
         network_mode = "internal"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
       }
 
       service {
@@ -180,8 +186,10 @@ job "weavedemo" {
 
       config {
         image = "weaveworksdemos/orders"
-        hostname = "orders"
+        hostname = "orders.weave.local"
         network_mode = "internal"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
       }
 
       service {
@@ -205,8 +213,10 @@ job "weavedemo" {
 
       config {
         image = "weaveworksdemos/shipping"
-        hostname = "shipping"
+        hostname = "shipping.weave.local"
         network_mode = "backoffice"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
       }
 
       service {
@@ -230,8 +240,10 @@ job "weavedemo" {
 
       config {
         image = "weaveworksdemos/payment"
-        hostname = "payment"
+        hostname = "payment.weave.local"
         network_mode = "secure"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
       }
 
       service {
@@ -255,8 +267,10 @@ job "weavedemo" {
 
       config {
         image = "weaveworksdemos/login"
-        hostname = "login"
+        hostname = "login.weave.local"
         network_mode = "secure"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
       }
 
       service {
@@ -317,7 +331,7 @@ job "weavedemo" {
 
       config {
         image = "mongo"
-        hostname = "accounts-db"
+        hostname = "accounts-db.weave.local"
         network_mode = "secure"
       }
 
@@ -342,7 +356,7 @@ job "weavedemo" {
 
       config {
         image = "mongo"
-        hostname = "cart-db"
+        hostname = "cart-db.weave.local"
         network_mode = "internal"
       }
 
@@ -367,7 +381,7 @@ job "weavedemo" {
 
       config {
         image = "mongo"
-        hostname = "orders-db"
+        hostname = "orders-db.weave.local"
         network_mode = "internal"
       }
 
