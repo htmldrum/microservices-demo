@@ -4,11 +4,11 @@
   become_user: root
 
   vars:
-    - clusterstore: yes
-    - consul_ip: 192.168.59.101
-    - nomad_start_on_boot: yes
-    - nomad_client_network_interface: eth1
-    - nomad_devmode: yes
+    clusterstore: yes
+    consul_ip: 192.168.59.101
+    nomad_start_on_boot: yes
+    nomad_client_network_interface: eth1
+    nomad_devmode: yes
 
   roles:
     - roles/mongrelion.docker
@@ -21,7 +21,14 @@
 - hosts: all
   become: yes
   become_user: root
+
+  vars:
+    localtime: Europe/Amsterdam
+
   tasks:
+    - name: ensure local time is properly set
+      file: src=/usr/share/zoneinfo/{{ localtime }} dest=/etc/localtime state=link force=yes
+
     - name: check for consul state
       command: docker ps -q -f name=consul
       register: consulcheck
