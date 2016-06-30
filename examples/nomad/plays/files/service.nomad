@@ -11,7 +11,7 @@ job "weavedemo" {
     max_parallel = 1
   }
 
-  # - Frontend group #
+  # - frontend #
   group "frontend" {
     count = 1
 
@@ -22,7 +22,7 @@ job "weavedemo" {
       mode = "delay"
     }
 
-    # - Frontend app - #
+    # - frontend app - #
     task "front-end" {
       driver = "docker"
 
@@ -41,15 +41,15 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 128 # 128Mb
+        memory = 128 # 128MB
         network {
           mbits = 10
         }
       }
     }
-    # - End Frontend app - #
+    # - end frontend app - #
 
-    # - edge-router app - #
+    # - edge-router - #
     task "edgerouter" {
       driver = "docker"
 
@@ -72,7 +72,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 128 # 128Mb
+        memory = 32 # 32MB
         network {
           mbits = 10
           port "http" {
@@ -83,13 +83,11 @@ job "weavedemo" {
           }
         }
       }
-    }
-    # - End edge-router app - #
-  }
-  # - End frontend group - #
+    } # - end edge-router - #
+  } # - end frontend - #
 
-  # - Backend group - #
-  group "backend" {
+  # - accounts - #
+  group "accounts" {
     count = 1
 
     restart {
@@ -99,7 +97,7 @@ job "weavedemo" {
       mode = "delay"
     }
 
-    # - Accounts app - #
+    # - app - #
     task "accounts" {
       driver = "docker"
 
@@ -118,15 +116,50 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 128 # 128Mb
+        memory = 256 # 256MB
         network {
           mbits = 10
         }
       }
-    }
-    # - End Accounts app - #
+    } # - end app - #
 
-    # - Catalogue app - #
+    # - db - #
+    task "accountsdb" {
+      driver = "docker"
+
+      config {
+        image = "mongo"
+        hostname = "accounts-db.weave.local"
+        network_mode = "secure"
+      }
+
+      service {
+        name = "${TASKGROUP}-accountsdb"
+        tags = ["db", "accounts", "accountsdb"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 96 # 96MB
+        network {
+          mbits = 10
+        }
+      }
+    } # - end db - #
+  } # - end accounts - #
+
+  # - catalogue - #
+  group "catalogue" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
+    }
+
+    # - app - #
     task "catalogue" {
       driver = "docker"
 
@@ -145,15 +178,26 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 128 # 128Mb
+        memory = 32 # 32MB
         network {
           mbits = 10
         }
       }
-    }
-    # - End Catalogue app - #
+    } # - end app - #
+  } # - end catalogue - #
 
-    # - Cart app - #
+  # - cart - #
+  group "cart" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
+    }
+
+    # - app - #
     task "cart" {
       driver = "docker"
 
@@ -172,42 +216,50 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 128 # 128Mb
+        memory = 256 # 256MB
         network {
           mbits = 10
         }
       }
-    }
-    # - End Cart app - #
+    } # - end app - #
 
-    # - Orders app - #
-    task "orders" {
+    # - db - #
+    task "cartdb" {
       driver = "docker"
 
       config {
-        image = "weaveworksdemos/orders"
-        hostname = "orders.weave.local"
+        image = "mongo"
+        hostname = "cart-db.weave.local"
         network_mode = "internal"
-        dns_servers = ["172.17.0.1"]
-        dns_search_domains = ["weave.local."]
       }
 
       service {
-        name = "${TASKGROUP}-orders"
-        tags = ["orders"]
+        name = "${TASKGROUP}-cartdb"
+        tags = ["db", "cart", "cartdb"]
       }
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 128 # 128Mb
+        memory = 128 # 128MB
         network {
           mbits = 10
         }
       }
-    }
-    # - End Orders app - #
+    } # - end db - #
+  } # - end cart - #
 
-    # - Shipping app - #
+  # - shipping - #
+  group "shipping" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
+    }
+
+    # - app - #
     task "shipping" {
       driver = "docker"
 
@@ -226,42 +278,26 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 128 # 128Mb
+        memory = 256 # 256MB
         network {
           mbits = 10
         }
       }
+    } # - end app - #
+  } # - end shipping - #
+
+  # - login - #
+  group "login" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
     }
-    # - End Shipping app - #
 
-    # - Payment app - #
-    task "payment" {
-      driver = "docker"
-
-      config {
-        image = "weaveworksdemos/payment"
-        hostname = "payment.weave.local"
-        network_mode = "secure"
-        dns_servers = ["172.17.0.1"]
-        dns_search_domains = ["weave.local."]
-      }
-
-      service {
-        name = "${TASKGROUP}-payment"
-        tags = ["payment"]
-      }
-
-      resources {
-        cpu = 100 # 100 Mhz
-        memory = 128 # 128Mb
-        network {
-          mbits = 10
-        }
-      }
-    }
-    # - End Payment app - #
-
-    # - Login app - #
+    # - app - #
     task "login" {
       driver = "docker"
 
@@ -280,18 +316,16 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 128 # 128Mb
+        memory = 16 # 16MB
         network {
           mbits = 10
         }
       }
-    }
-    # - End Login app - #
-  }
-  # - End backend group - #
+    } # - end app - #
+  } # - end login - #
 
-  # - Database group - #
-  group "db" {
+  # - payment - #
+  group "payment" {
     count = 1
 
     restart {
@@ -301,68 +335,60 @@ job "weavedemo" {
       mode = "delay"
     }
 
-    # - RabbitMQ database - #
-    task "rabbitmq" {
+    # - app - #
+    task "payment" {
       driver = "docker"
 
       config {
-        image = "rabbitmq:3"
-        network_mode = "backoffice"
-      }
-
-      service {
-        name = "${TASKGROUP}-rabbitmq"
-        tags = ["db"]
-      }
-
-      resources {
-        cpu = 100 # 100 Mhz
-        memory = 128 # 128MB
-        network {
-          mbits = 10
-        }
-      }
-    }
-    # - End RabbitMQ database - #
-
-    # - Accounts database - #
-    task "accountsdb" {
-      driver = "docker"
-
-      config {
-        image = "mongo"
-        hostname = "accounts-db.weave.local"
+        image = "weaveworksdemos/payment"
+        hostname = "payment.weave.local"
         network_mode = "secure"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
       }
 
       service {
-        name = "${TASKGROUP}-accountsdb"
-        tags = ["db", "accounts", "accountsdb"]
+        name = "${TASKGROUP}-payment"
+        tags = ["payment"]
       }
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 256 # 256MB
+        memory = 16 # 16MB
         network {
           mbits = 10
         }
       }
-    }
-    # - End Accounts database - #
+    } # - end app - #
+  } # - end payment - #
 
-    # - Cart database - #
-    task "cartdb" {
+
+  # - orders - #
+  group "orders" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
+    }
+
+    # - app - #
+    task "orders" {
       driver = "docker"
 
       config {
-        image = "mongo"
-        hostname = "cart-db.weave.local"
+        image = "weaveworksdemos/orders"
+        hostname = "orders.weave.local"
         network_mode = "internal"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
       }
 
       service {
-        name = "${TASKGROUP}-cartdb"
-        tags = ["db", "cart", "cartdb"]
+        name = "${TASKGROUP}-orders"
+        tags = ["orders"]
       }
 
       resources {
@@ -372,10 +398,9 @@ job "weavedemo" {
           mbits = 10
         }
       }
-    }
-    # - End Cart database - #
+    } # - end app - #
 
-    # - Orders database - #
+    # - db - #
     task "ordersdb" {
       driver = "docker"
 
@@ -392,13 +417,46 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 256 # 256MB
+        memory = 64 # 64MB
         network {
           mbits = 10
         }
       }
+    } # - end db - #
+  } # - end orders - #
+
+  # - rabbitmq - #
+  group "rabbitmq" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
     }
-    # - End Orders database - #
-  }
-  # - End database group - #
+
+    # - proc - #
+    task "rabbitmq" {
+      driver = "docker"
+
+      config {
+        image = "rabbitmq:3"
+        network_mode = "backoffice"
+      }
+
+      service {
+        name = "${TASKGROUP}-rabbitmq"
+        tags = ["db"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 160 # 160MB
+        network {
+          mbits = 10
+        }
+      }
+    } # - end proc - #
+  } # - end rabbitmq - #
 }
