@@ -1,6 +1,6 @@
 job "netman" {
   datacenters = ["dc1"]
-  type = "batch"
+  type = "system"
 
   constraint {
     attribute = "${attr.kernel.name}"
