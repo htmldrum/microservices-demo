@@ -44,7 +44,7 @@
 
   tasks:
     - name: ensure weavedemo job file is present
-      copy: src=files/service.nomad dest={{ jobspath }}/weavedemo.nomad
+      copy: src=files/weavedemo.nomad dest={{ jobspath }}/weavedemo.nomad
       register: weavejobfile
 
     - name: ensure netman job file is present
