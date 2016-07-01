@@ -1,0 +1,13 @@
+---
+- hosts: node*
+  become: yes
+  become_user: root
+
+  vars:
+    clusterstore: yes
+    consul_ip: 192.168.59.101
+
+  roles:
+    - roles/mongrelion.docker
+    - roles/mongrelion.weave
+    - roles/mongrelion.weave-scope

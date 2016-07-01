@@ -1,16 +1,10 @@
 ---
-- hosts: all
+- hosts: node*
   become: yes
   become_user: root
 
   vars:
-    jobspath: /var/lib/nomad/jobs
     netmanpath: /usr/bin/netman
-    networks:
-      - internal
-      - external
-      - secure
-      - backoffice
 
   tasks:
     - name: ensure netman script is present
@@ -19,6 +13,16 @@
     - name: ensure netman script is executable
       file: path={{ netmanpath }} mode="a+x"
 
+- hosts: node1
+  become: yes
+  become_user: root
+  vars:
+    networks:
+      - internal
+      - external
+      - secure
+      - backoffice
+  tasks:
     # TODO: Only notify change when the networks are actually created
     - name: ensure networks are created
       shell: >
@@ -31,6 +35,14 @@
       register: networkcreation
       with_items: "{{ networks }}"
 
+- hosts: nomad-server
+  become: yes
+  become_user: root
+
+  vars:
+    jobspath: /var/lib/nomad/jobs
+
+  tasks:
     - name: ensure weavedemo job file is present
       copy: src=files/service.nomad dest={{ jobspath }}/weavedemo.nomad
       register: weavejobfile

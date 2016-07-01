@@ -1,0 +1,17 @@
+---
+- hosts: node1
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: check for consul state
+      command: docker ps -q -f name=consul
+      register: consulcheck
+      changed_when: no
+
+    - set_fact:
+        should_runconsul: "{{ consulcheck.stdout_lines | length == 0 }}"
+
+    - name: ensure consul is running
+      command: docker run -d --name consul -p "8500:8500" --restart always progrium/consul -server -bootstrap
+      when: should_runconsul

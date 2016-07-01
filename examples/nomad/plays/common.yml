@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+
+  vars:
+    localtime: Europe/Amsterdam
+
+  tasks:
+    - name: ensure local time is properly set
+      file: src=/usr/share/zoneinfo/{{ localtime }} dest=/etc/localtime state=link force=yes
+
+    - name: ensure jq is installed
+      get_url: url=https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 dest=/usr/bin/jq
+
+    - name: ensure jq has the proper permissions set
+      file: path=/usr/bin/jq mode="a+x"

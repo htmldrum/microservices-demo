@@ -1,0 +1,27 @@
+---
+- hosts: node*
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: check for weave state
+      command: docker ps -q -f name=weave
+      register: weavecheck
+      changed_when: no
+
+    - name: check for scope state
+      command: docker ps -q -f name=weavescope
+      register: scopecheck
+      changed_when: no
+
+    - set_fact:
+        should_runweave: "{{ weavecheck.stdout_lines | length == 0 }}"
+        should_runscope: "{{ scopecheck.stdout_lines | length == 0 }}"
+
+    - name: ensure weave is running
+      command: weave launch
+      when: should_runweave
+
+    - name: ensure scope is running
+      command: scope launch
+      when: should_runscope

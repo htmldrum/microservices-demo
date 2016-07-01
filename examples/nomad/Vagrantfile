@@ -1,20 +1,25 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-MACHINES = 1
 
 Vagrant.configure(2) do |config|
   config.vm.box = "centos/7"
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = "4096"
-  end
 
-  (1..MACHINES).each do |n|
-    config.vm.define "node#{n}" do |node|
-      node.vm.network "private_network", ip: "192.168.59.10#{n}"
+  config.vm.define "nomad-server" do |m|
+    m.vm.hostname = "nomad-server"
+    m.vm.network "private_network", ip: "192.168.59.100"
+    m.vm.provider "virtualbox" do |vb|
+      vb.memory = "128"
     end
   end
 
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "plays/init.yml"
+  (1..3).each do |n|
+    name = "node#{n}"
+    config.vm.define name do |m|
+      m.vm.hostname = name
+      m.vm.network "private_network", ip: "192.168.59.10#{n}"
+      m.vm.provider "virtualbox" do |vb|
+        vb.memory = "2048"
+      end
+    end
   end
 end

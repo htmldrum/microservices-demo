@@ -1,0 +1,34 @@
+---
+- hosts: nomad-server
+  become: yes
+  become_user: root
+
+  vars:
+    nomad_server: yes
+    nomad_bootstrap_expect: 1
+    nomad_http_ip: "{{ internal_ip4 }}"
+    nomad_rpc_ip: "{{ internal_ip4 }}"
+    nomad_serf_ip: "{{ internal_ip4 }}"
+    nomad_bind_addr: 0.0.0.0
+    nomad_start_on_boot: yes
+
+  roles:
+    - roles/mongrelion.nomad
+
+- hosts: node*
+  become: yes
+  become_user: root
+
+  vars:
+    nomad_server: no
+    nomad_start_on_boot: yes
+    nomad_client_network_interface: eth1
+    nomad_raw_exec_enabled: yes
+    nomad_http_ip: "{{ internal_ip4 }}"
+    nomad_rpc_ip: "{{ internal_ip4 }}"
+    nomad_serf_ip: "{{ internal_ip4 }}"
+    nomad_servers:
+      - "{{ hostvars['nomad-server']['internal_ip4'] }}"
+
+  roles:
+    - roles/mongrelion.nomad

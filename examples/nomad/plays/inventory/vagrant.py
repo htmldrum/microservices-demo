@@ -85,6 +85,11 @@ def list_running_boxes():
 
     return boxes
 
+def get_a_private_ip(box_name):
+    """ Gives back the internal ip address of the machine"""
+
+    output = subprocess.check_output(["vagrant", "ssh", "-c", "ip -4 -o addr show dev eth1 | awk '{ gsub(\"/24\",\"\",$4); print $4 }'", box_name, "--", "-q"])
+    return output.strip()
 
 # get the ssh config for a single box
 def get_a_ssh_config(box_name):
@@ -111,9 +116,11 @@ if options.list:
     meta = defaultdict(dict)
 
     for host in ssh_config:
-        meta['hostvars'][host] = ssh_config[host]
+        hostinfo = ssh_config[host]
+        hostinfo['internal_ip4'] = get_a_private_ip(host)
+        meta['hostvars'][host] = hostinfo
 
-    print(json.dumps({_group: list(ssh_config.keys()), '_meta': meta}))
+    print(json.dumps({_group: ssh_config.keys(), "_meta": meta}))
     sys.exit(0)
 
 # Get out the host details
