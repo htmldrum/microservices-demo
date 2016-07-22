@@ -425,6 +425,41 @@ job "weavedemo" {
     } # - end db - #
   } # - end orders - #
 
+  # - queue-master #
+  group "queue-master" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
+    }
+
+    # - queue-master app - #
+    task "queue-master" {
+      driver = "raw_exec"
+
+      config {
+        command = "/usr/bin/docker"
+        args = ["run", "--name", "queue-master-${NOMAD_ALLOC_ID}", "--volume", "/var/run/docker.sock:/var/run/docker.sock", "--restart", "always", "--dns", "172.17.0.1", "--dns-search", "weave.local.", "--net", "backoffice", "--hostname", "queue-master.weave.local", "weaveworksdemos/queue-master"]
+      }
+
+      service {
+        name = "${TASKGROUP}-container"
+        tags = ["queuemaster"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 256 # 256MB
+        network {
+          mbits = 10
+        }
+      }
+    } # - end queue-master app - #
+  } # - end queue-master - #
+
   # - rabbitmq - #
   group "rabbitmq" {
     count = 1
