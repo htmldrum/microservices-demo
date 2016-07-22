@@ -442,6 +442,7 @@ job "weavedemo" {
 
       config {
         image = "rabbitmq:3"
+        hostname = "rabbitmq.weave.local"
         network_mode = "backoffice"
       }
 
