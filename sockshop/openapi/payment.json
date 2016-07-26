@@ -1,0 +1,81 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "",
+    "title": "Payment resources",
+    "description": "TODO: Add a description",
+    "license": {
+      "name": "MIT",
+      "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+    }
+  },
+  "host": "www.example.com",
+  "basePath": "/",
+  "securityDefinitions": {},
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/paymentAuth": {
+      "post": {
+        "description": "",
+        "operationId": "Create_Authorise_",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "x-is-map": false,
+            "schema": {
+              "$ref": "#/definitions/Authoriserequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Authoriseresponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Authoriserequest": {
+      "title": "Authorise request",
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "amount"
+      ]
+    },
+    "Authoriseresponse": {
+      "title": "Authorise response",
+      "type": "object",
+      "properties": {
+        "authorised": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "authorised"
+      ]
+    }
+  }
+}

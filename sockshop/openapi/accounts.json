@@ -1,0 +1,142 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "",
+    "title": "Accounts",
+    "description": "TODO: Add a description",
+    "license": {
+      "name": "MIT",
+      "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+    }
+  },
+  "host": "www.example.com",
+  "basePath": "/",
+  "securityDefinitions": {},
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/customers": {
+      "get": {
+        "description": "",
+        "operationId": "Get customers_",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Getcustomersresponse"
+            }
+          }
+        }
+      }
+    },
+    "/cards": {
+      "get": {
+        "description": "",
+        "operationId": "Get cards_",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Getcardsresponse"
+            }
+          }
+        }
+      }
+    },
+    "/addresses": {
+      "get": {
+        "description": "",
+        "operationId": "List_",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Listresponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Getcustomersresponse": {
+      "title": "Get customers response",
+      "type": "object",
+      "properties": {
+        "_embedded": {
+          "type": "object"
+        },
+        "_links": {
+          "type": "object"
+        },
+        "page": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "_embedded",
+        "_links",
+        "page"
+      ]
+    },
+    "Getcardsresponse": {
+      "title": "Get cards response",
+      "type": "object",
+      "properties": {
+        "_embedded": {
+          "type": "object"
+        },
+        "_links": {
+          "type": "object"
+        },
+        "page": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "_embedded",
+        "_links",
+        "page"
+      ]
+    },
+    "Listresponse": {
+      "title": "List response",
+      "type": "object",
+      "properties": {
+        "_embedded": {
+          "type": "object"
+        },
+        "_links": {
+          "type": "object"
+        },
+        "page": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "_embedded",
+        "_links",
+        "page"
+      ]
+    }
+  }
+}
